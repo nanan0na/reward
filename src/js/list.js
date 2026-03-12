@@ -1,16 +1,34 @@
-import { supabase } from './supabase.js'
-import { stamps } from './data.js'
+import { stamps, GRID_COUNT } from './data.js';
+import { supabase } from './supabase.js';
 
-const { data } = await supabase.auth.getSession()
-const container = document.querySelector('.stamp-list')
+const { data, error } = await supabase.auth.getSession();
+console.log('session check:', data, error);
 
 if (!data.session) {
-  location.href = './login.html'
+  location.href = './login.html';
 }
 
-container.innerHTML = stamps.map(stamp => `
-  <a href="./detail.html?id=${stamp.id}">
-    <img src="${stamp.thumbnail}">
-    <div>${stamp.title}</div>
-  </a>
-`).join('')
+const listEl = document.querySelector('#stamp-list');
+console.log('listEl:', listEl);
+
+if (listEl) {
+  const items = Array.from({ length: GRID_COUNT }, (_, index) => stamps[index] || null);
+
+  listEl.innerHTML = items.map((stamp) => {
+    if (!stamp) {
+      return `
+        <li class="empty">
+          <span class="empty-slot" aria-hidden="true"></span>
+        </li>
+      `;
+    }
+
+    return `
+      <li>
+        <a href="./detail.html?id=${stamp.id}">
+          <img src="${stamp.thumbnail}" alt="${stamp.title}">
+        </a>
+      </li>
+    `;
+  }).join('');
+}

@@ -1,22 +1,28 @@
-import { supabase } from './supabase.js'
+import { supabase } from './supabase.js';
 
-const form = document.querySelector('#login-form')
+const form = document.querySelector('#login-form');
 
 form?.addEventListener('submit', async (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  const email = document.querySelector('#email').value
-  const password = document.querySelector('#password').value
+  const email = document.querySelector('#userId').value.trim();
+  const password = document.querySelector('#userPw').value.trim();
+
+  if (!email || !password) {
+    alert('Enter your information');
+    return;
+  }
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password
-  })
+  });
 
   if (error) {
-    alert('로그인 실패')
-    return
+    alert('Login failed');
+    console.error(error);
+    return;
   }
 
-  location.href = './list.html'
-})
+  location.href = './list.html';
+});

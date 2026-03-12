@@ -1,46 +1,98 @@
-const params = new URLSearchParams(location.search)
-const stampId = params.get('id')
+import { stamps } from './data.js';
+import { supabase } from './supabase.js';
 
-const { data } = await supabase
-  .from('comments')
-  .select(`
-  id,
-  content,
-  created_at,
-  profiles (
-    display_name,
-    avatar_url
-  )
-`)
-  .eq('stamp_id', stampId)
-  .order('created_at')
+const { data: sessionData } = await supabase.auth.getSession();
 
-const container = document.querySelector('.comment-list')
+if (!sessionData.session) {
+  location.href = './login.html';
+}
 
-container.innerHTML = data.map(comment => `
-  <div class="comment">
-    <img src="${comment.profiles.avatar_url}">
-    <div>
-      <div>${comment.profiles.display_name}</div>
-      <div>${comment.content}</div>
-    </div>
-  </div>
-`).join('')
+const params = new URLSearchParams(location.search);
+const stampId = Number(params.get('id'));
 
-const form = document.querySelector('#comment-form')
+const stamp = stamps.find((item) => item.id === stampId);
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault()
+const dateEl = document.querySelector('#detail-date');
+const imageEl = document.querySelector('#detail-image');
+const titleEl = document.querySelector('#detail-title');
+const commentListEl = document.querySelector('#comment-list');
+const commentForm = document.querySelector('#comment-form');
+const commentInput = document.querySelector('#comment');
 
-  const input = document.querySelector('#comment-input')
+if (!stamp) {
+  alert('page does not exist');
+  location.href = './list.html';
+} else {
+  dateEl.textContent = stamp.date;
+  imageEl.src = stamp.image;
+  imageEl.alt = stamp.title;
+  titleEl.textContent = stamp.title;
+}
 
-  const { data: { user } } = await supabase.auth.getUser()
+async function renderComments() {
+  const { data: comments, error } = await supabase
+    .from('comments')
+    .select('id, content, created_at, user_id')
+    .eq('stamp_id', stampId)
+    .order('created_at', { ascending: true });
 
-  await supabase.from('comments').insert({
+  if (error) {
+    console.error(error);
+    commentListEl.innerHTML = '';
+    return;
+  }
+
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, display_name, avatar_url');
+
+  const profileMap = {};
+  (profiles || []).forEach((profile) => {
+    profileMap[profile.id] = profile;
+  });
+
+  commentListEl.innerHTML = comments.map((comment) => {
+    const profile = profileMap[comment.user_id];
+
+    return `
+      <li>
+        <figure class="user-avatar">
+          <img src="${profile?.avatar_url || '../avatar/0.jpg'}" alt="${profile?.display_name || 'user'}">
+        </figure>
+        <p class="user-comment">${comment.content}</p>
+      </li>
+    `;
+  }).join('');
+}
+
+commentForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const content = commentInput.value.trim();
+  if (!content) return;
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if (!user) {
+    alert('Login required');
+    return;
+  }
+
+  const { error } = await supabase.from('comments').insert({
     stamp_id: stampId,
     user_id: user.id,
-    content: input.value
-  })
+    content
+  });
 
-  input.value = ''
-})
+  if (error) {
+    console.error(error);
+    alert('Failed to register comment');
+    return;
+  }
+
+  commentInput.value = '';
+  renderComments();
+});
+
+renderComments();
