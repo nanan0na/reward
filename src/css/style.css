@@ -81,7 +81,7 @@ h1.title {text-align: center; font-size: 35px; font-weight: 300; color: #eee;}
 .comment-box { width: 100%; max-width: 760px; margin: 0 auto;}
 .comment-list { margin: 0 0 60px;  }
 .comment-list li { display: flex; align-items: flex-start; gap: 28px;}
-.comment-list li + li { margin-top: 26px;}
+.comment-list li + li { margin-top: 20px;}
 .user-avatar { flex-shrink: 0; width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 50%; overflow: hidden;}
 .user-avatar img { display: block; width: 100%; height: 100%; object-fit: cover;}
 .user-comment { flex: 1; margin: 0; padding-top: 4px; font-size: 16px; line-height: 1.7; color: rgba(255, 255, 255, 0.9); word-break: keep-all;}
@@ -99,11 +99,11 @@ h1.title {text-align: center; font-size: 35px; font-weight: 300; color: #eee;}
  response
 ----------------------------------*/
 @media (max-width: 1600px) {
-  .inner {width: 100%; max-width: 100%; padding: 0 40px;}
+  body {overflow: auto;}
+  .inner {width: 100%; max-width: 100%; height: auto; padding: 0 40px;}
+  #bg{ min-height: 100vh; height: auto; background-image: url(../images/bg-m.jpg);}
 }
 @media (max-width: 768px) {
-  body {overflow: auto;}
-  #bg{ min-height: 100vh; height: auto; background-image: url(../images/bg-m.jpg);}
   h1.title {font-size: 24px;}
   .inner {padding: 0 20px; display: flex; flex-direction: column; height: auto;}
   .login {width: 100%; gap: 30px;}
@@ -132,4 +132,16 @@ h1.title {text-align: center; font-size: 35px; font-weight: 300; color: #eee;}
 .comment-list li {gap: 20px;}
 .user-comment {font-size: 14px;}
 #comment {padding: 12px; font-size: 14px;}
+}
+@media (max-width: 560px) {
+  .img-list {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+  }
+
+  .img-list li {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
 }
