@@ -32,10 +32,21 @@ h1.title {text-align: center; font-size: 35px; font-weight: 300; color: #eee;}
 /* list */
 .list-box {padding: 120px 0;}
 .comm {display: flex; justify-content: space-between;}
+.header {display: flex; flex-direction: column; align-items: flex-start; width: 220px;}
 .head-title { margin-bottom: 30px;font-size: 28px;}
 .gnb {display: flex; flex-direction: column; gap: 16px; font-size: 20px;}
 .gnb li.active a {font-weight: 700; color: #fff;}
 .gnb li a {font-weight: 300; color: #aaa;}
+.logout-btn {
+  margin-top: 20px;
+  margin-left: auto;
+  background: transparent;
+  font-size: 12px;
+  color: #aaa;
+  cursor: pointer;
+  text-align: right;
+}
+.logout-btn:hover {color: #fff;}
 
 .reward-box {width: calc(100% - 300px);}
 .img-list {display: grid; grid-template-columns: repeat(auto-fill, 130px); grid-auto-rows: 130px; gap: 0;}
@@ -115,8 +126,10 @@ h1.title {text-align: center; font-size: 35px; font-weight: 300; color: #eee;}
   .reward-box, .detail-box {width: 100%;}
   .list-box { padding: 40px 0;}
   .comm {gap: 60px;}
+  .header {width: 100%;}
   .head-title {margin-bottom: 14px; font-size: 20px;}
   .gnb li a {font-size: 14px;}
+  .logout-btn {margin-top: 12px;}
   .img-list li {width: 100px; height: 100px;}
   .img-list {justify-content: center; grid-template-columns: repeat(auto-fill, 100px); grid-auto-rows: 100px;}
 

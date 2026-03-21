@@ -1,6 +1,9 @@
 import { supabase } from './supabase.js';
+import { redirectIfAuthenticated } from './auth.js';
 
 const form = document.querySelector('#login-form');
+
+await redirectIfAuthenticated();
 
 form?.addEventListener('submit', async (e) => {
   e.preventDefault();
